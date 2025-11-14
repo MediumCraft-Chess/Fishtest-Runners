@@ -3,7 +3,7 @@ name: Fishtest Worker
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *' # Every 5 hours
+    - cron: '0 */6 * * *' # Every 5 hours
 
 jobs:
   fishtest:
@@ -39,4 +39,5 @@ jobs:
           #!/bin/bash
           set -e
 
-          timeout 5h python3 fishtest/worker/worker.py "$FISHTEST_USER" "$FISHTEST_PASSWORD"
+          timeout 6h python3 fishtest/worker/worker.py "$FISHTEST_USER" "$FISHTEST_PASSWORD" --concurrency MAX-1
+        continue-on-error: true
