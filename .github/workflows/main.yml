@@ -1,0 +1,39 @@
+name: Fishtest Worker
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */5 * * *' # Every 5 hours
+
+jobs:
+  fishtest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Stockfish
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip unzip git
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Clone Fishtest
+        run: |
+          git clone https://github.com/official-stockfish/fishtest.git
+
+      - name: Install Python Requirements via uv
+        run: |
+          cd fishtest
+          uv sync
+
+      - name: Worker
+        env:
+          FISHTEST_USER: ${{ secrets.FISHTEST_USER }}
+          FISHTEST_PASSWORD: ${{ secrets.FISHTEST_PASSWORD }}
+        run: |
+          #!/bin/bash
+          set -e
+
+          timeout 5h python3 fishtest/worker/worker.py "$FISHTEST_USER" "$FISHTEST_PASSWORD"
