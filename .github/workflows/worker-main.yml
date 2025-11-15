@@ -37,7 +37,7 @@ jobs:
           cd fishtest
           echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Restore cached fastchess to reduce startup time
+      - name: Restore cached fastchess
         uses: actions/cache@v4.3.0
         with:
           path: fishtest/worker/testing/fastchess*
